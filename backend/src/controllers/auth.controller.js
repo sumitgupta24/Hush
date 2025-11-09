@@ -1,14 +1,17 @@
+import { generateToken } from "../lib/token.js";
 import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import bcrypt from "bcryptjs"
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const signup = async (req, res) => {
+export const signup = asyncHandler( async (req, res) => {
     const { fullName, email, password } = req.body;
 
     if (!fullName || !email || !password) {
         throw new ApiError(400, "All fields are required");
     }
-    if (!password.length < 6) {
+    if (password.length < 6) {
         throw new ApiError(400, "Password must be of length 6");
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,7 +25,7 @@ export const signup = async (req, res) => {
     }
 
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password,salt)
+    const hashedPassword = await bcrypt.hash(password, salt)
 
     const newUser = new User({
         fullName,
@@ -30,8 +33,18 @@ export const signup = async (req, res) => {
         password: hashedPassword
     })
 
-    if(!newUser){
+    if (!newUser) {
         throw new ApiError(400, "Invalid user data")
     }
 
-}
+    generateToken(newUser._id, res);
+    await newUser.save();
+
+    if (!newUser) {
+        throw new ApiError(400, "User couldn't be created");
+    }
+
+    return res.status(201).json(
+        new ApiResponse(200, newUser, "User Registered Successfully!")
+    );
+})

@@ -3,11 +3,17 @@ import dotenv from 'dotenv'
 import path from 'path'
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
-import { connectDB } from './database/db.js'
+import { connectDB } from './lib/db.js'
+import cookieParser from "cookie-parser"
+import { errorHandler } from './middlewares/errorHandler.js'
 
 dotenv.config()
 
 const app = express()
+
+app.use(express.json());
+
+app.use(cookieParser());
 
 const __dirname = path.resolve()
 
@@ -23,6 +29,8 @@ if(process.env.NODE_ENV == "production"){
         res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
     })
 }
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
