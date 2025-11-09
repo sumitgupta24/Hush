@@ -4,6 +4,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import bcrypt from "bcryptjs"
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendWelcomeEmail } from "../email/emailHandler.js";
+import "dotenv/config"
 
 export const signup = asyncHandler( async (req, res) => {
     const { fullName, email, password } = req.body;
@@ -37,11 +39,17 @@ export const signup = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Invalid user data")
     }
 
+    const savedUser = await newUser.save();
     generateToken(newUser._id, res);
-    await newUser.save();
 
     if (!newUser) {
         throw new ApiError(400, "User couldn't be created");
+    }
+
+    try {
+        await sendWelcomeEmail(savedUser.email,savedUser.fullName,process.env.CLIENT_URL);
+    } catch (error) {
+        console.error("Failed to send",error);
     }
 
     return res.status(201).json(
