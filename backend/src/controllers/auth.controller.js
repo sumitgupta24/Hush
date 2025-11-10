@@ -56,3 +56,33 @@ export const signup = asyncHandler( async (req, res) => {
         new ApiResponse(200, newUser, "User Registered Successfully!")
     );
 })
+
+export const login  = asyncHandler( async (req, res) => {
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        throw new ApiError(404, "Email or Password is necessary")
+    }
+
+    const user = await User.findOne({email});
+    if(!user){
+        throw new ApiError(404, "Invalid Credentials")
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password,user.password);
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid Credentials")
+    }
+
+    generateToken(user._id,res);
+    return res.status(200).json(
+        new ApiResponse(200, user, "User Logged In Successfully")
+    )
+})  
+
+export const logout = asyncHandler( async (req, res) => {
+    res.cookie("jwt"," ",{maxAge: 0})
+    return res.status(200).json(
+        new ApiResponse(200,{},"Logged out successfully")
+    )
+})
