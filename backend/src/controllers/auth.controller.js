@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendWelcomeEmail } from "../email/emailHandler.js";
 import "dotenv/config"
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = asyncHandler( async (req, res) => {
     const { fullName, email, password } = req.body;
@@ -85,4 +86,29 @@ export const logout = asyncHandler( async (req, res) => {
     return res.status(200).json(
         new ApiResponse(200,{},"Logged out successfully")
     )
+})
+
+export const updateProfile = asyncHandler( async (req, res) => {
+    const {profilePicture}  = req.body;
+    if(!profilePicture){
+        throw new ApiError(400, "Profile Picture is Needed")
+    }
+
+    const userId = req.user._id;
+
+    const uploadOnCloudinary = await cloudinary.uploader.upload(profilePicture)
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {profilePicture: uploadOnCloudinary.secure_url},
+        {new : true}
+    ).select("-password");
+
+    if(!updatedUser){
+        throw new ApiError(500, "Profile Picture couldn'e be uploaded")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedUser, "profile picture uploaded")
+    );
 })

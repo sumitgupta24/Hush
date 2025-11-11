@@ -5,7 +5,7 @@ import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
 import { connectDB } from './lib/db.js'
 import cookieParser from "cookie-parser"
-import { errorHandler } from './middlewares/errorHandler.js'
+import { errorHandler } from './middlewares/errorHandler.middleware.js'
 
 dotenv.config()
 
