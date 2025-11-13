@@ -65,3 +65,28 @@ export const sendMessage = asyncHandler(async (req, res) => {
         new ApiResponse(201, "Message sent successfully", newMessage)
     );
 });
+
+export const getChatPartners = asyncHandler(async (req, res) => {
+    const loggedInUserId = req.user._id;
+    const messages = await Message.find({
+        $or: [{senderId: loggedInUserId}, {receiverId: loggedInUserId}]
+    });
+
+    const chatPartnerIds = [
+        ...new Set(messages.map(msg => 
+        msg.senderId.toString() === loggedInUserId.toString() 
+        ? msg.receiverId.toString() 
+        : msg.senderId.toString())
+        ),
+    ];
+
+    const chatPartners = await User.find({_id: {$in:chatPartnerIds}}).select("-password");
+
+    if(!chatPartners || chatPartners.length === 0){
+        throw new ApiError(403, "Chat not found")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, chatPartners, "Partnes fetched successfully")
+    )
+})
