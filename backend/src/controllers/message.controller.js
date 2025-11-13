@@ -42,6 +42,14 @@ export const sendMessage = asyncHandler(async (req, res) => {
     const senderId = req.user._id;
     const receiverId = req.params.id;   
 
+    if(!text && !image){
+        throw new ApiError(400, "Text or image is necessary")
+    }
+
+    if(receiverId.equals(senderId)){
+        throw new ApiError(403, "Can't send text to itself")
+    }
+
     let imageURL;
     if(image){
         const uploadedImage = await cloudinary.uploader.upload(image);
