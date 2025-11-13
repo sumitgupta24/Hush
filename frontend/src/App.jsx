@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, Routes } from 'react-router';
-import ChatPage from './pages/ChatPage';
-import SignupPage from './pages/SignupPage';
-import LoginPage from './pages/LoginPage';
+import ChatPage from './pages/ChatPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
 
 function App() {
   return (
