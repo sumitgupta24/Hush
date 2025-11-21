@@ -33,7 +33,7 @@ export const getMessageByUserId = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, "Messages fetched successfully", messages)
+        new ApiResponse(200, messages, "Messages fetched successfully")
     );
 });
 
