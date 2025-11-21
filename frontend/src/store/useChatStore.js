@@ -23,8 +23,8 @@ export const useChatStore = create((set, get) => ({
     getAllContacts: async() => {
         set({isUsersLoading: true});
         try {
-            const res = await axiosInstance.get("/message /contacts");
-            set({allContacts: res.data});
+            const res = await axiosInstance.get("/message/contacts");
+            set({allContacts: res.data.data});
         } catch (error) {
             toast.error(error.response.data.message)
         } finally {
@@ -34,10 +34,11 @@ export const useChatStore = create((set, get) => ({
 
 
     getMyChatPartners: async() => {
+        
         set({isUsersLoading: true});
         try {
             const res = await axiosInstance.get("/message/chats");
-            set({allContacts: res.data});
+            set({chats: res.data.data});
         } catch (error) {
             toast.error(error.response.data.message)
         } finally {

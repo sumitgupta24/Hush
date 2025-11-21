@@ -14,7 +14,7 @@ export const getAllContacts  = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, "Contacts fetched successfully", filteredUsers)
+        new ApiResponse(200, filteredUsers, "Contacts fetched successfully")
     );
 })
 
@@ -46,9 +46,9 @@ export const sendMessage = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Text or image is necessary")
     }
 
-    if(receiverId.equals(senderId)){
-        throw new ApiError(403, "Can't send text to itself")
-    }
+    // if(receiverId.equals(senderId)){
+    //     throw new ApiError(403, "Can't send text to itself")
+    // }
 
     let imageURL;
     if(image){
