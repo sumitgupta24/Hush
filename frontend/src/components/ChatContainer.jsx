@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/useAuthStore'
 import ChatHeader from './ChatHeader';
 import NoChatHistoryPlaceholder from './NoChatHistoryPlaceholder';
 import MessagesLoadingSkeleton from './MessagesLoadingSkeleton';
+import MessageInput from './MessageInput';
 
 function ChatContainer() {
   const { selectedUser, getMessageByUserId, messages, isMessagesLoading } = useChatStore();
@@ -50,6 +51,7 @@ function ChatContainer() {
           <NoChatHistoryPlaceholder name={selectedUser.fullName} />
         )}
       </div>
+      <MessageInput />
     </>
   )
 }
