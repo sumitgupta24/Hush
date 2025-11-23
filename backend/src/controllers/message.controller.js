@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import cloudinary from "../lib/cloudinary.js";
+import {getReceiverSocketId, io} from "../lib/socket.js"
 
 export const getAllContacts  = asyncHandler(async (req, res) => {
     const loggedInUser = req.user._id;
@@ -64,6 +65,12 @@ export const sendMessage = asyncHandler(async (req, res) => {
     }
 
     await newMessage.save();
+
+    const receiverSocketId = getReceiverSocketId(receiverId)
+
+    if(receiverSocketId){
+        io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     return res.status(201).json(
         new ApiResponse(201,newMessage,"Message sent successfully")
