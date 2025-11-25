@@ -6,9 +6,9 @@ import { useAuthStore } from './useAuthStore'
 export const useChatStore = create((set, get) => ({
     allContacts: [],
     chats: [],
-    messages: [],
-    activeTab: "chats",
-    selectedUser: null,
+    messages: JSON.parse(localStorage.getItem("messages")) || [],
+    activeTab: localStorage.getItem("activeTab") || "chats",
+    selectedUser: JSON.parse(localStorage.getItem("selectedUser")) || null,
     isUsersLoading: false,
     isMessageLoading: false,
     isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")) === true,
@@ -18,8 +18,16 @@ export const useChatStore = create((set, get) => ({
         set({ isSoundEnabled: !get().isSoundEnabled })
     },
 
-    setActiveTab: (tab) => set({ activeTab: tab }),
-    setSelectedUser: (selectedUser) => set({ selectedUser,messages : [] }),
+    setActiveTab: (tab) => {
+        localStorage.setItem("activeTab", tab);
+        set({ activeTab: tab })
+    },
+
+    setSelectedUser: (selectedUser) => {
+        localStorage.setItem("selectedUser", JSON.stringify(selectedUser));
+        localStorage.setItem("messages", JSON.stringify([]));
+        set({ selectedUser, messages: [] })
+    },
 
     getAllContacts: async () => {
         set({ isUsersLoading: true });
@@ -32,7 +40,6 @@ export const useChatStore = create((set, get) => ({
             set({ isUsersLoading: false })
         }
     },
-
 
     getMyChatPartners: async () => {
 
@@ -51,7 +58,9 @@ export const useChatStore = create((set, get) => ({
         set({ isMessageLoading: true })
         try {
             const res = await axiosInstance.get(`/message/${userId}`);
-            set({ messages: res.data.data })
+            const newMessages = res.data.data;
+            localStorage.setItem("messages", JSON.stringify(newMessages));
+            set({ messages: newMessages })
         } catch (error) {
             toast.error(error.response?.data?.message || "Some error!!")
         } finally {
@@ -74,18 +83,26 @@ export const useChatStore = create((set, get) => ({
             createdAt: new Date().toISOString(),
             isOptimistic: true,
         };
+        const messagesWithOptimistic = [...messages, optimisticMessage];
+        localStorage.setItem("messages", JSON.stringify(messagesWithOptimistic));
         set((state) => ({
-            messages: [...state.messages, optimisticMessage]
+            messages: messagesWithOptimistic
         }));
         try {
             const res = await axiosInstance.post(`/message/send/${selectedUser._id}`, messageData);
-            set((state) => ({
-                messages: state.messages.map(msg =>
+            set((state) => {
+                const updatedMessages = state.messages.map(msg =>
                     msg._id === tempId ? res.data.data : msg
-                )
-            }));
+                );
+                localStorage.setItem("messages", JSON.stringify(updatedMessages));
+                return { messages: updatedMessages };
+            });
         } catch (error) {
-            set({ messages: messages });
+            set((state) => {
+                const revertedMessages = state.messages.filter(msg => msg._id !== tempId);
+                localStorage.setItem("messages", JSON.stringify(revertedMessages));
+                return {messages: revertedMessages}
+            });
             toast.error(error.response?.data?.message || "Something is wrong")
         }
     },
@@ -102,7 +119,9 @@ export const useChatStore = create((set, get) => ({
             if(!isMessageSentBySelectedUser) return;
 
             const currentMessages = get().messages;
-            set({messages : [...currentMessages, newMessage]});
+            const updatedMessages = [...currentMessages, newMessage];
+            localStorage.setItem("messages", JSON.stringify(updatedMessages));
+            set({messages : updatedMessages});
 
             if(isSoundEnabled){
                 const notificationSound = new Audio("/sounds/notification.mp3")
