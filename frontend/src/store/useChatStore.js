@@ -19,7 +19,7 @@ export const useChatStore = create((set, get) => ({
     },
 
     setActiveTab: (tab) => set({ activeTab: tab }),
-    setSelectedUser: (selectedUser) => set({ selectedUser }),
+    setSelectedUser: (selectedUser) => set({ selectedUser,messages : [] }),
 
     getAllContacts: async () => {
         set({ isUsersLoading: true });

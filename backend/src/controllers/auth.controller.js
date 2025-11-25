@@ -43,7 +43,7 @@ export const signup = asyncHandler( async (req, res) => {
     const savedUser = await newUser.save();
     generateToken(newUser._id, res);
 
-    if (!newUser) {
+    if (!savedUser) {
         throw new ApiError(400, "User couldn't be created");
     }
 
@@ -54,7 +54,7 @@ export const signup = asyncHandler( async (req, res) => {
     }
 
     return res.status(201).json(
-        new ApiResponse(200, newUser, "User Registered Successfully!")
+        new ApiResponse(200, savedUser, "User Registered Successfully!")
     );
 })
 
