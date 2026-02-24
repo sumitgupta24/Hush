@@ -25,30 +25,28 @@ function ChatContainer() {
     }
   },[messages ])
 
-
-
   return (
     <>
       <ChatHeader />
-      <div className='flex-1 px-6 overflow-y-auto py-8'>
+      <div className='flex-1 overflow-y-auto px-4 md:px-6 py-3 md:py-4 bg-gradient-to-b from-transparent to-slate-950/20'>
         {messages.length > 0 ? (
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="mx-auto space-y-2.5 md:space-y-3">
             {messages.map((msg) => (
               <div
                 key={msg._id}
-                className={`chat ${msg.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+                className={`flex animate-slideUp ${msg.senderId === authUser._id ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`chat-bubble relative ${msg.senderId === authUser._id
-                    ? "bg-cyan-600 text-white"
-                    : "bg-slate-800 text-slate-200"
+                  className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg ${msg.senderId === authUser._id
+                    ? "msg-bubble-sent"
+                    : "msg-bubble-received"
                     }`}
                 >
                   {msg.image && (
-                    <img src={msg.image} alt="Shared" className="rounded-lg h-48 object-cover" />
+                    <img src={msg.image} alt="Shared" className="rounded-lg mb-2 max-w-full object-cover max-h-64 sm:max-h-80" />
                   )}
-                  {msg.text && <p className="mt-2">{msg.text}</p>}
-                  <p className="text-xs mt-1 opacity-75 flex items-center gap-1">
+                  {msg.text && <p className="text-sm md:text-base leading-relaxed break-words">{msg.text}</p>}
+                  <p className={`text-xs mt-2 opacity-70 ${msg.senderId === authUser._id ? "text-white" : "text-slate-400"}`}>
                     {new Date(msg.createdAt).toLocaleTimeString(undefined, {
                       hour: "2-digit",
                       minute: "2-digit",

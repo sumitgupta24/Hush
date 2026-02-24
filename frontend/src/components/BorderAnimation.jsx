@@ -1,6 +1,6 @@
 function BorderAnimation({ children }) {
   return (
-    <div className="w-full h-full [background:linear-gradient(45deg,#172033,theme(colors.slate.800)_50%,#172033)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.600/.48)_80%,_theme(colors.cyan.500)_86%,_theme(colors.cyan.300)_90%,_theme(colors.cyan.500)_94%,_theme(colors.slate.600/.48))_border-box] rounded-2xl border border-transparent animate-border  flex overflow-hidden">
+    <div className="w-full h-full rounded-2xl border border-slate-700/50 [background:linear-gradient(135deg,rgba(15,23,42,0.5),rgba(30,41,59,0.5))_padding-box,linear-gradient(135deg,rgba(14,165,233,0.3),rgba(139,92,246,0.3))_border-box] flex overflow-hidden shadow-2xl hover:shadow-primary-500/10 transition-shadow duration-300">
       {children}
     </div>
   );

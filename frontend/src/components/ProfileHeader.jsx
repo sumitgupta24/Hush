@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
+import { LogOut, Volume2, VolumeOff } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
@@ -27,70 +27,70 @@ function ProfileHeader() {
   }
 
   return (
-    <div className="p-6 border-b border-slate-700/50">
+    <div className="px-3 md:px-4 py-2 h-fit border-b border-slate-700/30">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 min-w-0">
           {/* AVATAR */}
-          <div className="avatar online">
-            <button
-              className="size-14 rounded-full overflow-hidden relative group"
-              onClick={() => fileInputRef.current.click()}
-            >
-              <img
-                src={selectedImg || authUser.profilePicture || "/avatar.png"}
-                alt="User image"
-                className="size-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <span className="text-white text-xs">Change</span>
-              </div>
-            </button>
-
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-              className="hidden"
+          <button
+            className="size-8 md:size-9 rounded-lg overflow-hidden relative group flex-shrink-0 ring-1 ring-primary-500/20 hover:ring-primary-500/40 transition-all"
+            onClick={() => fileInputRef.current.click()}
+          >
+            <img
+              src={selectedImg || authUser.profilePicture || "/avatar.png"}
+              alt="User image"
+              className="size-full object-cover"
             />
-          </div>
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+              <span className="text-white text-xs font-medium">Change</span>
+            </div>
+          </button>
+
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            className="hidden"
+          />
 
           {/* USERNAME & ONLINE TEXT */}
-          <div>
-            <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-slate-100 font-semibold text-xs md:text-sm truncate leading-tight">
               {authUser.fullName}
-
             </h3>
-
-            <p className="text-slate-400 text-xs">Online</p>
+            <p className="text-slate-400 text-xs leading-tight flex items-center gap-0.5">
+              <span className="w-1 h-1 rounded-full bg-green-500"></span>
+              Online
+            </p>
           </div>
         </div>
 
-        {/* BUTTONS */}
-        <div className="flex gap-4 items-center">
-          {/* LOGOUT BTN */}
-          <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
-            onClick={logout}
-          >
-            <LogOutIcon className="size-5" />
-          </button>
-
+        {/* ACTION BUTTONS */}
+        <div className="flex gap-0.5 items-center flex-shrink-0">
           {/* SOUND TOGGLE BTN */}
           <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="btn-ghost"
             onClick={() => {
-              // play click sound before toggling
-              mouseClickSound.currentTime = 0; // reset to start
+              mouseClickSound.currentTime = 0;
               mouseClickSound.play().catch((error) => console.log("Audio play failed:", error));
               toggleSound();
             }}
+            title={isSoundEnabled ? "Disable sounds" : "Enable sounds"}
           >
             {isSoundEnabled ? (
-              <Volume2Icon className="size-5" />
+              <Volume2 className="size-4" />
             ) : (
-              <VolumeOffIcon className="size-5" />
+              <VolumeOff className="size-4" />
             )}
+          </button>
+
+          {/* LOGOUT BTN */}
+          <button
+            className="btn-ghost"
+            onClick={logout}
+            title="Logout"
+          >
+            <LogOut className="size-4" />
           </button>
         </div>
       </div>

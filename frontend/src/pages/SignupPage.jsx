@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useAuthStore } from "../store/useAuthStore";
 import BorderAnimation from "../components/BorderAnimation";
-import { MessageCircleIcon, LockIcon, MailIcon, UserIcon, LoaderIcon, User } from "lucide-react";
+import { MessageCircleIcon, LockIcon, MailIcon, UserIcon, Loader2, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 
 function SignupPage() {
@@ -9,102 +9,158 @@ function SignupPage() {
   const signup = useAuthStore((state) => state.signup);
   const isSigningUp = useAuthStore((state) => state.isSigningUp);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     signup(formData);
   }
+
   return (
-    <div className="w-full flex items-center justify-center p-4 bg-slate-900">
-      <div className="relative w-full max-w-6xl md:h-[800px] h-[650px]">
+    <div className="w-full flex items-center justify-center p-4">
+      <div className="relative w-full max-w-5xl">
         <BorderAnimation>
-          <div className="w-full flex flex-col md:flex-row">
-            {/* Left Side  */}
-            <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">
+          <div className="w-full flex flex-col md:flex-row overflow-hidden">
+            {/* Left Side - Form */}
+            <div className="md:w-1/2 p-8 md:p-12 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm md:border-r border-slate-700/30">
               <div className="w-full max-w-md">
-                {/* Heading Text  */}
-                <div className="text-center mb-8">
-                  <MessageCircleIcon className="w-12 h-12 mx-auto text-slate-400 mb-4" />
-                  <h2 className="text-2xl font-bold text-slate-200 mb-2">Create Account</h2>
-                  <p className="text-slate-400">Sign up for a new account</p>
+                {/* Header */}
+                <div className="text-center mb-10">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border border-primary-500/30 mb-4">
+                    <MessageCircleIcon className="w-8 h-8 text-primary-400" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-2 font-['Plus_Jakarta_Sans']">Create Account</h2>
+                  <p className="text-slate-400">Join our community and start chatting</p>
                 </div>
-                {/* Form Section  */}
-                <form action="" onSubmit={handleSubmit} className="space-y-6">
-                  {/* Full Name  */}
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Full Name */}
                   <div>
-                    <label className="auth-input-label"></label>
-                    <div className="relative">
-                      <UserIcon className="auth-input-icon" />
+                    <label className="auth-input-label">Full Name</label>
+                    <div className="relative group">
+                      <UserIcon className="auth-input-icon group-focus-within:text-primary-400" />
                       <input
                         type="text"
+                        required
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        className="input"
-                        placeholder="Sumit Gupta"
+                        className="input pl-11"
+                        placeholder="John Doe"
                       />
                     </div>
                   </div>
-                  {/* Email  */}
-                  <div>
-                    <label className="auth-input-label">Email</label>
-                    <div className="relative">
-                      <MailIcon className="auth-input-icon" />
 
+                  {/* Email */}
+                  <div>
+                    <label className="auth-input-label">Email Address</label>
+                    <div className="relative group">
+                      <MailIcon className="auth-input-icon group-focus-within:text-primary-400" />
                       <input
                         type="email"
+                        required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="input"
-                        placeholder="sumitgupta24@gmail.com"
+                        className="input pl-11"
+                        placeholder="you@example.com"
                       />
                     </div>
                   </div>
-                  {/* Password  */}
+
+                  {/* Password */}
                   <div>
                     <label className="auth-input-label">Password</label>
-                    <div className="relative">
-                      <LockIcon className="auth-input-icon" />
+                    <div className="relative group">
+                      <LockIcon className="auth-input-icon group-focus-within:text-primary-400" />
                       <input
                         type="password"
+                        required
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="input"
-                        placeholder="Enter your password"
+                        className="input pl-11"
+                        placeholder="Create a strong password"
                       />
                     </div>
                   </div>
-                  {/* Submit Button  */}
-                  <button className="auth-btn" type="submit" disabled={isSigningUp}>
+
+                  {/* Submit Button */}
+                  <button 
+                    className="auth-btn mt-6 group flex items-center justify-center gap-2" 
+                    type="submit" 
+                    disabled={isSigningUp}
+                  >
                     {isSigningUp ? (
-                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Creating account...</span>
+                      </>
                     ) : (
-                      "Create Account"
+                      <>
+                        <span>Create Account</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
                     )}
                   </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                  <Link to="/login" className="auth-link">
-                    Already have an account? Login
+                {/* Sign In Link */}
+                <div className="mt-7 text-center">
+                  <p className="text-slate-400">Already have an account?</p>
+                  <Link to="/login" className="auth-link-secondary mt-3">
+                    Sign in here
                   </Link>
                 </div>
               </div>
             </div>
-            {/* Right Side  */}
-            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20 to-transparent">
-              <div>
-                <img
-                  src="/signup.png"
-                  alt="People using mobile devices"
-                  className="w-full h-auto object-contain"
-                />
-                <div className="mt-6 text-center">
-                  <h3 className="text-xl font-medium text-cyan-400">Start Your Journey Today</h3>
 
-                  <div className="mt-4 flex justify-center gap-4">
-                    <span className="auth-badge">Free</span>
-                    <span className="auth-badge">Easy Setup</span>
-                    <span className="auth-badge">Private</span>
+            {/* Right Side - Benefits */}
+            <div className="hidden md:flex md:w-1/2 items-center justify-center p-8 bg-gradient-to-br from-slate-900/60 to-slate-950/60 backdrop-blur-sm">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border border-primary-500/30 mb-6 mx-auto">
+                  <MessageCircleIcon className="w-10 h-10 text-primary-400" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-slate-100 mb-4 font-['Plus_Jakarta_Sans']">Welcome to Hush</h3>
+                <p className="text-slate-400 mb-8">Your secure messaging platform</p>
+
+                {/* Features */}
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex-shrink-0 mt-1">
+                      <span className="text-sm font-semibold text-primary-400">✓</span>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-200">No Ads</p>
+                      <p className="text-sm text-slate-400">100% ad-free experience</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex-shrink-0 mt-1">
+                      <span className="text-sm font-semibold text-primary-400">✓</span>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-200">Always Free</p>
+                      <p className="text-sm text-slate-400">No subscriptions or hidden fees</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex-shrink-0 mt-1">
+                      <span className="text-sm font-semibold text-primary-400">✓</span>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-200">Global Community</p>
+                      <p className="text-sm text-slate-400">Connect with people worldwide</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary-500/20 border border-primary-500/30 flex-shrink-0 mt-1">
+                      <span className="text-sm font-semibold text-primary-400">✓</span>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-200">Easy to Use</p>
+                      <p className="text-sm text-slate-400">Intuitive interface for everyone</p>
+                    </div>
                   </div>
                 </div>
               </div>
