@@ -1,17 +1,20 @@
 import React from 'react'
-import { Loader2 } from "lucide-react"
+import { Loader2 } from 'lucide-react'
 
 function PageLoader() {
   return (
-    <div className='fixed inset-0 flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'>
-      <div className='flex flex-col items-center gap-4'>
-        <div className='relative w-16 h-16'>
-          <div className='absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg opacity-20 blur-xl animate-pulse'></div>
-          <div className='relative w-full h-full flex items-center justify-center'>
-            <Loader2 className="size-10 text-primary-400 animate-spin" />
+    <div className="fixed inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.16),transparent_30%),linear-gradient(135deg,#020617_0%,#0f172a_45%,#111827_100%)]">
+      <div className="glass-panel flex flex-col items-center gap-4 px-8 py-8">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500 to-secondary-500 opacity-20 blur-xl animate-pulse" />
+          <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-slate-900/70">
+            <Loader2 className="size-8 animate-spin text-primary-400" />
           </div>
         </div>
-        <p className='text-slate-400 text-sm font-medium'>Loading...</p>
+        <div className="text-center">
+          <p className="text-sm font-semibold text-slate-100">Preparing your workspace</p>
+          <p className="text-sm text-slate-400">Just a moment...</p>
+        </div>
       </div>
     </div>
   )

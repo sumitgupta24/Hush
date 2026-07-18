@@ -1,20 +1,20 @@
-import { useState, useRef } from "react";
-import { LogOut, Volume2, VolumeOff } from "lucide-react";
-import { useAuthStore } from "../store/useAuthStore";
-import { useChatStore } from "../store/useChatStore";
+import { useState, useRef } from 'react';
+import { LogOut, Volume2, VolumeOff, Sparkles } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
+import { useChatStore } from '../store/useChatStore';
 
-const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
+const mouseClickSound = new Audio('/sounds/mouse-click.mp3');
 
 function ProfileHeader() {
   const { logout, authUser, updateProfile } = useAuthStore();
   const { isSoundEnabled, toggleSound } = useChatStore();
-  const [ selectedImg, setSelectedImg ] = useState(null)
+  const [selectedImg, setSelectedImg] = useState(null);
 
   const fileInputRef = useRef();
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if(!file) return;
+    if (!file) return;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -22,80 +22,64 @@ function ProfileHeader() {
     reader.onloadend = async () => {
       const base64Image = reader.result;
       setSelectedImg(base64Image);
-      await updateProfile({profilePicture: base64Image});
-    }
-  }
+      await updateProfile({ profilePicture: base64Image });
+    };
+  };
 
   return (
-    <div className="px-3 md:px-4 py-2 h-fit border-b border-slate-700/30">
+    <div className="border-b border-white/10 px-3 py-3 md:px-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 min-w-0">
-          {/* AVATAR */}
+        <div className="flex min-w-0 items-center gap-2.5">
           <button
-            className="size-8 md:size-9 rounded-lg overflow-hidden relative group flex-shrink-0 ring-1 ring-primary-500/20 hover:ring-primary-500/40 transition-all"
+            className="group relative flex-shrink-0 overflow-hidden rounded-2xl border border-primary-500/20 ring-1 ring-primary-500/10 transition-all hover:ring-primary-500/30"
             onClick={() => fileInputRef.current.click()}
           >
             <img
-              src={selectedImg || authUser.profilePicture || "/avatar.png"}
+              src={selectedImg || authUser.profilePicture || '/avatar.png'}
               alt="User image"
-              className="size-full object-cover"
+              className="h-12 w-12 object-cover md:h-13 md:w-13"
             />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-              <span className="text-white text-xs font-medium">Change</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+              Edit
             </div>
           </button>
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-            className="hidden"
-          />
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
 
-          {/* USERNAME & ONLINE TEXT */}
           <div className="min-w-0 flex-1">
-            <h3 className="text-slate-100 font-semibold text-xs md:text-sm truncate leading-tight">
-              {authUser.fullName}
-            </h3>
-            <p className="text-slate-400 text-xs leading-tight flex items-center gap-0.5">
-              <span className="w-1 h-1 rounded-full bg-green-500"></span>
+            <div className="flex items-center gap-2">
+              <h3 className="truncate text-sm font-semibold text-slate-100">{authUser.fullName}</h3>
+              <span className="rounded-full border border-primary-500/20 bg-primary-500/10 p-1 text-primary-300">
+                <Sparkles className="h-3.5 w-3.5" />
+              </span>
+            </div>
+            <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Online
             </p>
           </div>
         </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="flex gap-0.5 items-center flex-shrink-0">
-          {/* SOUND TOGGLE BTN */}
+        <div className="flex flex-shrink-0 items-center gap-1.5">
           <button
             className="btn-ghost"
             onClick={() => {
               mouseClickSound.currentTime = 0;
-              mouseClickSound.play().catch((error) => console.log("Audio play failed:", error));
+              mouseClickSound.play().catch((error) => console.log('Audio play failed:', error));
               toggleSound();
             }}
-            title={isSoundEnabled ? "Disable sounds" : "Enable sounds"}
+            title={isSoundEnabled ? 'Disable sounds' : 'Enable sounds'}
           >
-            {isSoundEnabled ? (
-              <Volume2 className="size-4" />
-            ) : (
-              <VolumeOff className="size-4" />
-            )}
+            {isSoundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeOff className="h-4 w-4" />}
           </button>
 
-          {/* LOGOUT BTN */}
-          <button
-            className="btn-ghost"
-            onClick={logout}
-            title="Logout"
-          >
-            <LogOut className="size-4" />
+          <button className="btn-ghost" onClick={logout} title="Logout">
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProfileHeader
+export default ProfileHeader;
